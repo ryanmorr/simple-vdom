@@ -1,29 +1,13 @@
 /**
- * Determine if the type of a vnode
- * has changed
- *
- * @param {Object} a
- * @param {Object} b
- * @return {Boolean}
- * @api private
- */
-function hasChanged(a, b) {
-    return typeof a !== typeof b || typeof a === 'string' && a !== b || a.nodeName !== b.nodeName;
-}
-
-/**
  * Set an attribute or add an event
  * to an element
  *
  * @param {Element} element
  * @param {String} name
- * @param {String|Number|Boolean|Array|Object|Function} value
+ * @param {String|Number|Boolean|Function} value
  * @api private
  */
 function setAttribute(element, name, value) {
-    if (value == null || value === false) {
-        return false;
-    }
     if (name[0] === 'o' && name[1] === 'n') {
         element.addEventListener(name.slice(2).toLowerCase(), value);
     } else {
@@ -63,8 +47,7 @@ function createElement(vnode) {
     if (typeof vnode === 'string') {
         return document.createTextNode(vnode);
     }
-    const element = document.createElement(vnode.nodeName);
-    const attributes = vnode.attributes;
+    const element = document.createElement(vnode.nodeName), attributes = vnode.attributes;
     Object.keys(attributes).forEach((name) => setAttribute(element, name, attributes[name]));
     vnode.children.map(createElement).forEach((node) => element.appendChild(node));
     return element;
@@ -81,17 +64,18 @@ function createElement(vnode) {
  * @api public
  */
 export function patch(parent, newNode, oldNode = null, index = 0) {
-    const el = parent.childNodes[index];
+    const element = parent.childNodes[index];
     if (!oldNode) {
         const newEl = createElement(newNode);
         return parent.appendChild(newEl);
     }
     if (!newNode) {
-        return parent.removeChild(el);
-    }
-    if (hasChanged(newNode, oldNode)) {
+        return parent.removeChild(element);
+    } else if (typeof newNode !== typeof oldNode
+        || typeof newNode === 'string' && newNode !== oldNode
+        || newNode.nodeName !== oldNode.nodeName) {
         const newEl = createElement(newNode);
-        return parent.replaceChild(newEl, el);
+        return parent.replaceChild(newEl, element);
     }
     if (newNode.nodeName) {
         const attributes = Object.assign({}, newNode.attributes, oldNode.attributes);
@@ -99,14 +83,14 @@ export function patch(parent, newNode, oldNode = null, index = 0) {
             const newVal = newNode.attributes[name];
             const oldVal = oldNode.attributes[name];
             if (newVal == null || newVal === false) {
-                removeAttribute(el, name, oldVal);
+                removeAttribute(element, name, oldVal);
             } else if (!oldVal || newVal !== oldVal) {
-                setAttribute(el, name, newVal);
+                setAttribute(element, name, newVal);
             }
         });
         const length = Math.max(newNode.children.length, oldNode.children.length);
         for (let i = 0; i < length; ++i) {
-            patch(el, newNode.children[i], oldNode.children[i], i);
+            patch(element, newNode.children[i], oldNode.children[i], i);
         }
     }
 }
