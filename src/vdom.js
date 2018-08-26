@@ -9,10 +9,9 @@
  */
 function setAttribute(element, name, value) {
     if (name[0] === 'o' && name[1] === 'n') {
-        element.addEventListener(name.slice(2).toLowerCase(), value);
-    } else {
-        element.setAttribute(name, value);
+        return element.addEventListener(name.slice(2).toLowerCase(), value);
     }
+    element.setAttribute(name, value);
 }
 
 /**
@@ -26,8 +25,7 @@ function setAttribute(element, name, value) {
  */
 function removeAttribute(element, name, value) {
     if (name[0] === 'o' && name[1] === 'n') {
-        element.removeEventListener(name.slice(2).toLowerCase(), value);
-        return;
+        return element.removeEventListener(name.slice(2).toLowerCase(), value);
     }
     element.removeAttribute(name);
 }
@@ -65,31 +63,26 @@ function createElement(vnode) {
  */
 export function patch(parent, newNode, oldNode = null, index = 0) {
     const element = parent.childNodes[index];
-    if (!oldNode) {
-        const newEl = createElement(newNode);
-        return parent.appendChild(newEl);
+    if (oldNode == null) {
+        return parent.appendChild(createElement(newNode));
     }
-    if (!newNode) {
+    if (newNode == null) {
         return parent.removeChild(element);
     } else if (typeof newNode !== typeof oldNode
         || typeof newNode === 'string' && newNode !== oldNode
         || newNode.nodeName !== oldNode.nodeName) {
-        const newEl = createElement(newNode);
-        return parent.replaceChild(newEl, element);
+        return parent.replaceChild(createElement(newNode), element);
     }
     if (newNode.nodeName) {
-        const attributes = Object.assign({}, newNode.attributes, oldNode.attributes);
-        Object.keys(attributes).forEach((name) => {
-            const newVal = newNode.attributes[name];
-            const oldVal = oldNode.attributes[name];
+        for (const name in Object.assign({}, newNode.attributes, oldNode.attributes)) {
+            const newVal = newNode.attributes[name], oldVal = oldNode.attributes[name];
             if (newVal == null || newVal === false) {
                 removeAttribute(element, name, oldVal);
             } else if (!oldVal || newVal !== oldVal) {
                 setAttribute(element, name, newVal);
             }
-        });
-        const length = Math.max(newNode.children.length, oldNode.children.length);
-        for (let i = 0; i < length; ++i) {
+        }
+        for (let i = 0; i < Math.max(newNode.children.length, oldNode.children.length); ++i) {
             patch(element, newNode.children[i], oldNode.children[i], i);
         }
     }
@@ -98,9 +91,9 @@ export function patch(parent, newNode, oldNode = null, index = 0) {
 /**
  * JSX-compatible virtual DOM builder
  *
- * @param {String|Function} nodeName
+ * @param {String} nodeName
  * @param {Object|Null} attributes (optional)
- * @param {...String|Number|Boolean|Object} children (optional)
+ * @param {...String|Object} children (optional)
  * @return {Object}
  * @api public
  */
