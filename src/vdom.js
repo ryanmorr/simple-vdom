@@ -70,8 +70,7 @@ function removeAttribute(element, name, value) {
  * @api private
  */
 function createElement(vnode) {
-    const type = typeof vnode;
-    if (type === 'string' || type === 'boolean' || type === 'number') {
+    if (typeof vnode type === 'string') {
         return document.createTextNode(vnode);
     }
     const element = document.createElement(vnode.nodeName);
@@ -93,10 +92,6 @@ function createElement(vnode) {
  */
 export function patch(parent, newNode, oldNode = null, index = 0) {
     const el = parent.childNodes[index];
-    const type = typeof newNode;
-    if (type === 'boolean' || type === 'number') {
-        newNode = newNode.toString();
-    }
     if (!oldNode) {
         const newEl = createElement(newNode);
         return parent.appendChild(newEl);
