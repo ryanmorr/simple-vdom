@@ -24,17 +24,7 @@ function setAttribute(element, name, value) {
     if (value == null || value === false) {
         return false;
     }
-    if (name === 'class') {
-        if (Array.isArray(value)) {
-            value = value.join(' ');
-        }
-        element.className = value;
-    } else if (name === 'style') {
-        Object.keys(value).forEach((key) => {
-            const style = value == null || value[key] == null ? '' : value[key];
-            element.style[key] = style;
-        });
-    } else if (name[0] === 'o' && name[1] === 'n') {
+    if (name[0] === 'o' && name[1] === 'n') {
         element.addEventListener(name.slice(2).toLowerCase(), value);
     } else {
         element.setAttribute(name, value);
@@ -70,7 +60,7 @@ function removeAttribute(element, name, value) {
  * @api private
  */
 function createElement(vnode) {
-    if (typeof vnode type === 'string') {
+    if (typeof vnode === 'string') {
         return document.createTextNode(vnode);
     }
     const element = document.createElement(vnode.nodeName);
