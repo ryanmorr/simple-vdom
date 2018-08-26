@@ -86,11 +86,12 @@ function createElement(vnode) {
  * it matches the updated virtual tree
  *
  * @param {Element} parent
- * @param {Object} patches
+ * @param {Object|String} newNode
+ * @param {Object|String} oldNode (optional)
  * @param {Number} index (optional)
  * @api public
  */
-export function patch(parent, newNode, oldNode, index = 0) {
+export function patch(parent, newNode, oldNode = null, index = 0) {
     const el = parent.childNodes[index];
     const type = typeof newNode;
     if (type === 'boolean' || type === 'number') {
