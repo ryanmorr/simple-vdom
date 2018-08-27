@@ -21,6 +21,10 @@ describe('patch', () => {
         container.innerHTML = '';
     });
 
+    it('should be defined and callable', () => {
+        expect(patch).to.be.a('function');
+    });
+
     it('should patch an empty container', () => {
         patch(container,
             h('div')
