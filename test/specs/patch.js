@@ -2,19 +2,19 @@
 
 import { h, patch } from '../../src/vdom';
 
-describe('vdom', () => {
+describe('patch', () => {
     const container = document.createElement('div');
 
-    function compack(html) {
+    function compact(html) {
         return html.replace(/\s{2,}/g, '');
     }
 
     function setHTML(html) {
-        container.innerHTML = compack(html);
+        container.innerHTML = compact(html);
     }
 
     function expectHTML(html) {
-        expect(container.innerHTML).to.equal(compack(html));
+        expect(container.innerHTML).to.equal(compact(html));
     }
 
     afterEach(() => {
