@@ -219,14 +219,14 @@ describe('patch', () => {
         patch(container,
             h('section', null,
                 h('div', null,
-                    h('span', null, 
+                    h('span', null,
                         h('em')
                     )
                 )
             ),
             h('section', null,
                 h('div', null,
-                    h('span', null, 
+                    h('span', null,
                         h('i')
                     )
                 )
