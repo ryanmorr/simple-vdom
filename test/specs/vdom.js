@@ -169,4 +169,105 @@ describe('vdom', () => {
 
         expectHTML('<div></div>');
     });
+
+    it('should patch a deeply nested text node', () => {
+        setHTML(`
+            <section>
+                <div>
+                    <span>foo</span>
+                </div>
+            </section>
+        `);
+
+        patch(container,
+            h('section', null,
+                h('div', null,
+                    h('span', null, 'bar')
+                )
+            ),
+            h('section', null,
+                h('div', null,
+                    h('span', null, 'foo')
+                )
+            )
+        );
+
+        expectHTML(`
+            <section>
+                <div>
+                    <span>bar</span>
+                </div>
+            </section>
+        `);
+    });
+
+    it('should patch a deeply nested element', () => {
+        setHTML(`
+            <section>
+                <div>
+                    <span>
+                        <i></i>
+                    </span>
+                </div>
+            </section>
+        `);
+
+        patch(container,
+            h('section', null,
+                h('div', null,
+                    h('span', null, 
+                        h('em')
+                    )
+                )
+            ),
+            h('section', null,
+                h('div', null,
+                    h('span', null, 
+                        h('i')
+                    )
+                )
+            )
+        );
+
+        expectHTML(`
+            <section>
+                <div>
+                    <span>
+                        <em></em>
+                    </span>
+                </div>
+            </section>
+        `);
+    });
+
+    it('should patch deeply nested attributes', () => {
+        setHTML(`
+            <section>
+                <div>
+                    <span foo="1" bar="2"></span>
+                </div>
+            </section>
+        `);
+
+        patch(container,
+            h('section', null,
+                h('div', null,
+                    h('span', {foo: 2, baz: 3})
+                )
+            ),
+            h('section', null,
+                h('div', null,
+                    h('span', {foo: 1, bar: 2})
+                )
+            )
+        );
+
+        expectHTML(`
+            <section>
+                <div>
+                    <span foo="2" baz="3"></span>
+                </div>
+            </section>
+        `);
+    });
 });
