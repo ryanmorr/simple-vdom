@@ -119,4 +119,13 @@ describe('vdom', () => {
         expect(removeEventSpy.calledWith('click', callback)).to.equal(true);
         removeEventSpy.restore();
     });
+
+    it('should remove an attribute if the value assigned is undefined, null, or false', () => {
+        const container = document.createElement('div');
+        container.innerHTML = '<div foo="1" bar="2" baz="3"></div>';
+
+        patch(container, h('div', {foo: void 0, bar: null, baz: false}), h('div', {foo: 1, bar: 2, baz: 3}));
+
+        expect(container.innerHTML).to.equal('<div></div>');
+    });
 });

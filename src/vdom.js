@@ -1,33 +1,28 @@
 /**
- * Set an attribute or add an event
- * to an element
+ * Add or remove an attribute/event to
+ * and from an element
  *
  * @param {Element} element
  * @param {String} name
- * @param {String|Number|Boolean|Function} value
+ * @param {String|Number|Boolean|Function} newVal
+ * @param {String|Number|Boolean|Function} oldVal (optional)
  * @api private
  */
-function setAttribute(element, name, value) {
+function updateAttribute(element, name, newVal, oldVal = null) {
     if (name[0] === 'o' && name[1] === 'n') {
-        return element.addEventListener(name.slice(2).toLowerCase(), value);
+        name = name.slice(2).toLowerCase();
+        if (newVal == null) {
+            element.removeEventListener(name, oldVal);
+        } else if (oldVal == null) {
+            element.addEventListener(name, newVal);
+        }
+        return;
     }
-    element.setAttribute(name, value);
-}
-
-/**
- * Remove an attribute or event from
- * an element
- *
- * @param {Element} element
- * @param {String} name
- * @param {Function} value
- * @api private
- */
-function removeAttribute(element, name, value) {
-    if (name[0] === 'o' && name[1] === 'n') {
-        return element.removeEventListener(name.slice(2).toLowerCase(), value);
+    if (newVal == null || newVal === false) {
+        element.removeAttribute(name);
+    } else {
+        element.setAttribute(name, newVal);
     }
-    element.removeAttribute(name);
 }
 
 /**
@@ -46,7 +41,7 @@ function createElement(vnode) {
         return document.createTextNode(vnode);
     }
     const element = document.createElement(vnode.nodeName), attributes = vnode.attributes;
-    Object.keys(attributes).forEach((name) => setAttribute(element, name, attributes[name]));
+    Object.keys(attributes).forEach((name) => updateAttribute(element, name, attributes[name]));
     vnode.children.map(createElement).forEach((node) => element.appendChild(node));
     return element;
 }
@@ -75,12 +70,7 @@ export function patch(parent, newNode, oldNode = null, index = 0) {
     }
     if (newNode.nodeName) {
         for (const name in Object.assign({}, newNode.attributes, oldNode.attributes)) {
-            const newVal = newNode.attributes[name], oldVal = oldNode.attributes[name];
-            if (newVal == null || newVal === false) {
-                removeAttribute(element, name, oldVal);
-            } else if (!oldVal || newVal !== oldVal) {
-                setAttribute(element, name, newVal);
-            }
+            updateAttribute(element, name, newNode.attributes[name], oldNode.attributes[name]);
         }
         for (let i = 0; i < Math.max(newNode.children.length, oldNode.children.length); ++i) {
             patch(element, newNode.children[i], oldNode.children[i], i);
