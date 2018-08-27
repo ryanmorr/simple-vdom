@@ -88,25 +88,6 @@ describe('patch', () => {
         expectHTML('<div foo="baz"></div>');
     });
 
-    it('should add class names', () => {
-        patch(container,
-            h('div', {class: 'foo bar'})
-        );
-
-        expectHTML('<div class="foo bar"></div>');
-    });
-
-    it('should update class names', () => {
-        setHTML('<div class="foo bar"></div>');
-
-        patch(container,
-            h('div', {class: 'bar baz'}),
-            h('div', {class: 'foo bar'})
-        );
-
-        expectHTML('<div class="bar baz"></div>');
-    });
-
     it('should add CSS styles', () => {
         patch(container,
             h('div', {style: 'width: 100px; background-color: #222222'})
