@@ -5,6 +5,18 @@ import { h, patch } from '../../src/vdom';
 describe('vdom', () => {
     const container = document.createElement('div');
 
+    function compack(html) {
+        return html.replace(/\s{2,}/g, '');
+    }
+
+    function setHTML(html) {
+        container.innerHTML = compack(html);
+    }
+
+    function expectHTML(html) {
+        expect(container.innerHTML).to.equal(compack(html));
+    }
+
     afterEach(() => {
         container.innerHTML = '';
     });
@@ -14,62 +26,62 @@ describe('vdom', () => {
             h('div')
         );
 
-        expect(container.innerHTML).to.equal('<div></div>');
+        expectHTML('<div></div>');
     });
 
     it('should patch a text node', () => {
-        container.innerHTML = 'foo';
+        setHTML('foo');
 
         patch(container,
             'bar',
             'foo'
         );
 
-        expect(container.innerHTML).to.equal('bar');
+        expectHTML('bar');
     });
 
     it('should patch an element', () => {
-        container.innerHTML = '<span></span>';
+        setHTML('<span></span>');
 
         patch(container,
             h('div'),
             h('span')
         );
 
-        expect(container.innerHTML).to.equal('<div></div>');
+        expectHTML('<div></div>');
     });
 
     it('should add an attribute', () => {
-        container.innerHTML = '<div></div>';
+        setHTML('<div></div>');
 
         patch(container,
             h('div', {id: 'foo'}),
             h('div')
         );
 
-        expect(container.innerHTML).to.equal('<div id="foo"></div>');
+        expectHTML('<div id="foo"></div>');
     });
 
     it('should remove an attribute', () => {
-        container.innerHTML = '<div foo="bar"></div>';
+        setHTML('<div foo="bar"></div>');
 
         patch(container,
             h('div'),
             h('div', {foo: 'bar'})
         );
 
-        expect(container.innerHTML).to.equal('<div></div>');
+        expectHTML('<div></div>');
     });
 
     it('should update an attribute', () => {
-        container.innerHTML = '<div foo="bar"></div>';
+        setHTML('<div foo="bar"></div>');
 
         patch(container,
             h('div', {foo: 'baz'}),
             h('div', {foo: 'bar'})
         );
 
-        expect(container.innerHTML).to.equal('<div foo="baz"></div>');
+        expectHTML('<div foo="baz"></div>');
     });
 
     it('should add class names', () => {
@@ -77,18 +89,18 @@ describe('vdom', () => {
             h('div', {class: 'foo bar'})
         );
 
-        expect(container.innerHTML).to.equal('<div class="foo bar"></div>');
+        expectHTML('<div class="foo bar"></div>');
     });
 
     it('should update class names', () => {
-        container.innerHTML = '<div class="foo bar"></div>';
+        setHTML('<div class="foo bar"></div>');
 
         patch(container,
             h('div', {class: 'bar baz'}),
             h('div', {class: 'foo bar'})
         );
 
-        expect(container.innerHTML).to.equal('<div class="bar baz"></div>');
+        expectHTML('<div class="bar baz"></div>');
     });
 
     it('should add CSS styles', () => {
@@ -96,18 +108,18 @@ describe('vdom', () => {
             h('div', {style: 'width: 100px; background-color: #222222'})
         );
 
-        expect(container.innerHTML).to.equal('<div style="width: 100px; background-color: #222222"></div>');
+        expectHTML('<div style="width: 100px; background-color: #222222"></div>');
     });
 
     it('should update CSS styles', () => {
-        container.innerHTML = '<div style="width: 100px; background-color: #222222"></div>';
+        setHTML('<div style="width: 100px; background-color: #222222"></div>');
 
         patch(container,
             h('div', {style: 'height: 100px; background-color: #111111'}),
             h('div', {style: 'width: 100px; background-color: #222222'})
         );
 
-        expect(container.innerHTML).to.equal('<div style="height: 100px; background-color: #111111"></div>');
+        expectHTML('<div style="height: 100px; background-color: #111111"></div>');
     });
 
     it('should add an event listener', () => {
@@ -148,13 +160,13 @@ describe('vdom', () => {
     });
 
     it('should remove an attribute if the value assigned is undefined, null, or false', () => {
-        container.innerHTML = '<div foo="1" bar="2" baz="3"></div>';
+        setHTML('<div foo="1" bar="2" baz="3"></div>');
 
         patch(container,
             h('div', {foo: void 0, bar: null, baz: false}),
             h('div', {foo: 1, bar: 2, baz: 3})
         );
 
-        expect(container.innerHTML).to.equal('<div></div>');
+        expectHTML('<div></div>');
     });
 });
