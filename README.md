@@ -44,7 +44,7 @@ patch(
     document.querySelector('#root'),
     h('div', {
         class: 'foo bar',
-        style: 'width: 100px; height: 100px; background-color: red'
+        style: 'width: 100px; height: 100px; background-color: red',
         onClick: (e) => handleEvent(e)
     }),
     h('div')
