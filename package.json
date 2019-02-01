@@ -1,9 +1,10 @@
 {
-  "name": "simple-vdom",
+  "name": "@ryanmorr/simple-vdom",
   "description": "A tiny virtual DOM implementation",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "license": "Unlicense",
   "homepage": "https://github.com/ryanmorr/simple-vdom",
+  "main": "dist/vdom.min.js",
   "author": "Ryan Morr",
   "repository": {
     "type": "git",
@@ -11,6 +12,9 @@
   },
   "bugs": {
     "url": "https://github.com/ryanmorr/simple-vdom/issues"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "devDependencies": {
     "@babel/core": "^7.0.1",
